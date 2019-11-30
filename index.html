@@ -16,15 +16,6 @@
 			/* animation: moveBg 2s infinite; */
 			transition:.3s;
 		}
-/* 
-		@keyframes moveBg {
-			from {
-				background-position: 0 0;
-			}
-			to {
-				background-position: 100% 100%;
-			}
-		} */
 	</style>
 </head>
 
@@ -33,14 +24,17 @@
 		<canvas width="400" height="500"></canvas>
 	</div>
 	<script src="js/objects.js"></script>
+	<script src="js/collision.js"></script>
 	<script src="js/script.js"></script>
 </body>
 <script>
+	
 	const bg = document.getElementById('bg');
 	let position = 0;
 	setInterval( () => {
 		bg.style.backgroundPositionY =  position + 'px';
 		position += 5;
 	},100)
+	
 </script>
 </html>

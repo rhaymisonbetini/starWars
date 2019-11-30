@@ -91,6 +91,8 @@
         }
     }
 
+  
+
     function loop() { // metodo que fica realizando o looping eterno com o update
         requestAnimationFrame(loop, cnv);
         switch (gameState) {
@@ -103,8 +105,8 @@
         render();
     }
 
-    //nesse método são realizados as atualizaçoes de movimento na tela
-    function update() {
+     //nesse método são realizados as atualizaçoes de movimento na tela
+     function update() {
         if (mvLeft && !mvRight) defender.vx = -5;
         if (mvRight && !mvLeft) defender.vx = +5;
         if (!mvLeft && !mvRight) defender.vx = 0;
@@ -117,14 +119,13 @@
 
         //atualizar possição dos misseis
         for (let i in missiles) {
-            let missile = missiles[i];
-            missile.y += missile.vy;
-            if (missile.y < - missile.height) {
-                removeObjects(missile, missiles);
-                removeObjects(missile, sprites);
+            let missil = missiles[i];
+            missil.y += missil.vy;
+            if (missil.y < -missil.height) {
+                removeObjects(missil, missiles);
+                removeObjects(missil, sprites);
                 i--;
             }
-
         }
 
         //encremento do alienTimer
@@ -155,22 +156,23 @@
             //conferindo se alguma nave passou por pela defender, se passou o jogo morre ( pode ser implementando diminuição de pontos futuramente )
             if (alien.y > cnv.height + alien.height) {
                 gameState = OVER;
-                alert('game over meu nobre');
+            }
+            //nesse momento eu verificado se algum aliente esta colidindo com algum missil
+            for (let j in missiles) {
+                let missile = missiles[i]
+                if (colide(missile, alien) && alien.state !== alien.EXPLODED) {
+                    alienDestroy(alien);
+                    removeObjects(missile, missiles);
+                    removeObjects(missile, sprites);
+                    j--;
+                    
+                }
             }
 
         }
 
     }
 
-    function render() { // metodo para renderizar todos os sprites na tela em um looping infinito
-        ctx.clearRect(0, 0, cnv.width, cnv.height);
-        if (sprites.length !== 0) {
-            for (var i in sprites) {
-                var spr = sprites[i];
-                ctx.drawImage(img, spr.sourceX, spr.sourceY, spr.width, spr.height, Math.floor(spr.x), Math.floor(spr.y), spr.width, spr.height);
-            }
-        }
-    }
 
     //metodo de criação dos misseis
     function fireMissile() {
@@ -200,6 +202,16 @@
         sprites.push(alien);
     }
 
+    function alienDestroy(alien) {
+        alien.state = alien.EXPLODED;
+        alien.explode();
+        setTimeout(() => {
+            removeObjects(alien, aliens);
+            removeObjects(alien, sprites);
+        }, 1000);
+    }
+
+
     //remove missei do array para não ocupar spaço na memória
     function removeObjects(objectToRemove, array) {
         let i = array.indexOf(objectToRemove);
@@ -207,6 +219,17 @@
             array.splice(i, 1);
         }
     }
+
+    function render() { // metodo para renderizar todos os sprites na tela em um looping infinito
+        ctx.clearRect(0, 0, cnv.width, cnv.height);
+        if (sprites.length !== 0) {
+            for (var i in sprites) {
+                var spr = sprites[i];
+                ctx.drawImage(img, spr.sourceX, spr.sourceY, spr.width, spr.height, Math.floor(spr.x), Math.floor(spr.y), spr.width, spr.height);
+            }
+        }
+    }
+
 
     loop();
 })();
