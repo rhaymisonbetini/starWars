@@ -11,7 +11,6 @@ Forem realizadas melhorias no código,implementados novos elementos e ações.
 # Tecnologias usadas
 
 - Javascript
-- phaser.js
 - html 5
 - css 3
 
