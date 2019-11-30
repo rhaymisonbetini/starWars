@@ -1,0 +1,16 @@
+@font-face {
+    font-family: emulogic;
+    src: url("../fonts/emulogic.ttf");
+}
+
+#bg {
+    width: 400px;
+    height: 500px;
+    position: relative;
+    margin: 0 auto;
+    border: solid;
+    top: 50px;
+    background: url('../img/teste.jpg');
+    /* animation: moveBg 2s infinite; */
+    transition:.3s;
+}

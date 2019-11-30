@@ -1,24 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<title>Batalha Espacial</title>
-	<style>
-		#bg {
-			width: 400px;
-			height: 500px;
-			position: relative;
-			margin: 0 auto;
-			border: solid;
-			top: 50px;
-			background: url('./img/teste.jpg');
-			/* animation: moveBg 2s infinite; */
-			transition:.3s;
-		}
-	</style>
+	<link rel="stylesheet" href="./css/style.css">
 </head>
-
 <body bgcolor="#000">
 	<div id="bg">
 		<canvas width="400" height="500"></canvas>
@@ -29,12 +15,6 @@
 </body>
 <script>
 	
-	const bg = document.getElementById('bg');
-	let position = 0;
-	setInterval( () => {
-		bg.style.backgroundPositionY =  position + 'px';
-		position += 5;
-	},100)
-	
+
 </script>
 </html>
