@@ -6,7 +6,7 @@
 
 Projeto de um jogo de batalha espacial para navegadores.
 O jogo foi baseado em um projeto inicialmente criado pelo Desenvolvedor Gustavo Silveira no seu canal do youtube.
-Forem realizadas melhorias no código,implementados novos elementos e ações.
+Foram realizadas melhorias no código,implementados novos elementos e ações.
 
 # Tecnologias usadas
 
