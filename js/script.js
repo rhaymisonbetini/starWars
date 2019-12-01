@@ -9,9 +9,16 @@
 	let missiles = [];
 	let aliens = [];
 	let messages = [];
+	let pauseds = [];
+	let acuracys = [];
 
 	let alienFrequency = 100;
 	let alienTimer = 0;
+	let shots = 0;
+	let hits = 0;
+	let acuracy = 0;
+	let scoreTowin = 70;
+
 
 	//naves
 	let defender = new Sprite(0, 0, 30, 50, 185, 450);
@@ -21,9 +28,14 @@
 	let startMessage = new ObjectMessage(cnv.height / 2, "PRESS ENTER", "#fff");
 	messages.push(startMessage);
 
-	let pauseMessage = new ObjectMessage(cnv.height/2, "PAUSED", "#F00")
+	let pauseMessage = new ObjectMessage(cnv.height / 2, "PAUSED", "#F00")
 	pauseMessage.visible = false;
-	messages.push(pauseMessage);
+	pauseds.push(pauseMessage);
+
+	let scoreMessage = new ObjectMessage(30, " ", "#0f0");
+	scoreMessage.font = "normal bold 15px emulogic";
+	updateScrote();
+	acuracys.push(scoreMessage);
 
 
 	//imagem
@@ -128,6 +140,7 @@
 			if (missile.y < -missile.height) {
 				removeObjects(missile, missiles);
 				removeObjects(missile, sprites);
+				updateScrote();
 				i--;
 			}
 		}
@@ -162,7 +175,8 @@
 				let missile = missiles[j];
 				if (collide(missile, alien) && alien.state !== alien.EXPLODED) {
 					destroyAlien(alien);
-
+					hits++ // aumentando o valor de hits
+					updateScrote();
 					removeObjects(missile, missiles);
 					removeObjects(missile, sprites);
 					j--;
@@ -175,6 +189,7 @@
 		missile.vy = -8;
 		sprites.push(missile);
 		missiles.push(missile);
+		shots++ // incrementando misseis
 	}
 
 	function makeAlien() {
@@ -212,6 +227,31 @@
 		}
 	}
 
+	function updateScrote() {
+		//calculo de proveitamento tiro por acertos
+		if (shots === 0) {
+			acuracy = 100;
+		} else {
+			acuracy = Math.floor((hits / shots) * 100)
+		}
+
+		if (acuracy < 100) {
+			acuracy = acuracy.toString();
+			if (acuracy.length < 2) {
+				acuracy = "  " + acuracy;
+			} else {
+				acuracy = " " + acuracy;
+			}
+		}
+
+		hits = hits.toString()
+		if (hits.length < 2) {
+			hits = "0" + hits;
+		}
+
+		scoreMessage.text = "HITS: " + hits + " - ACURACY: " + acuracy + " %";
+	}
+
 	function render() {
 		ctx.clearRect(0, 0, cnv.width, cnv.height);
 		if (sprites.length !== 0) {
@@ -234,6 +274,31 @@
 				}
 			}
 		}
+
+		if (pauseds.length !== 0) {
+			for (let j in pauseds) {
+				let psd = pauseds[j];
+				if (psd.visible) {
+					ctx.font = psd.font;
+					ctx.fillStyle = psd.color;
+					ctx.textBaseline = psd.baseline;
+					psd.x = (cnv.width - 248);
+					ctx.fillText(psd.text, psd.x, psd.y);
+				}
+			}
+		}
+		if (acuracys.length !== 0) {
+			for (let j in acuracys) {
+				let acuracy = acuracys[j];
+				if (acuracy.visible) {
+					ctx.font = acuracy.font;
+					ctx.fillStyle = acuracy.color;
+					ctx.textBaseline = acuracy.baseline;
+					acuracy.x = (cnv.width - 390);
+					ctx.fillText(acuracy.text, acuracy.x, acuracy.y);
+				}
+			}
+		}
 	}
 
 	loop();
@@ -243,10 +308,10 @@
 	//metodo de rolagem de tela
 	const bg = document.getElementById('bg');
 	let position = 0;
-	setInterval( () => {
-		bg.style.backgroundPositionY =  position + 'px';
+	setInterval(() => {
+		bg.style.backgroundPositionY = position + 'px';
 		position += 5;
-	},100)
-	
+	}, 100)
+
 
 }());
