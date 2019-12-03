@@ -11,6 +11,8 @@
 	let messages = [];
 	let pauseds = [];
 	let acuracys = [];
+	let gameOver = [];
+	let wins = [];
 
 	let alienFrequency = 100;
 	let alienTimer = 0;
@@ -18,6 +20,8 @@
 	let hits = 0;
 	let acuracy = 0;
 	let scoreTowin = 70;
+	let fire = 0, explosion = 1;
+	let letsRock = false;
 
 
 	//naves
@@ -36,6 +40,14 @@
 	scoreMessage.font = "normal bold 15px emulogic";
 	updateScrote();
 	acuracys.push(scoreMessage);
+
+	let gameOverMessage = new ObjectMessage(cnv.height / 2, "", "#f00");
+	gameOverMessage.visible = false;
+	gameOver.push(gameOverMessage);
+
+	let youWinMessage = new ObjectMessage(cnv.height / 2, "YOU WINS", "#00f");
+	youWinMessage.visible = false;
+	wins.push(youWinMessage);
 
 
 	//imagem
@@ -86,13 +98,19 @@
 				mvRight = false;
 				break;
 			case ENTER:
-				if (gameState !== PLAYING) {
-					gameState = PLAYING;
-					startMessage.visible = false;
-					pauseMessage.visible = false;
-				} else {
-					gameState = PAUSED;
-					pauseMessage.visible = true;
+				if (gameState !== OVER) {
+					if (gameState !== PLAYING) {
+						gameState = PLAYING;
+						startMessage.visible = false;
+						pauseMessage.visible = false;
+						letsRock = true;
+						playRock();
+					} else {
+						gameState = PAUSED;
+						letsRock = false;
+						playRock();
+						pauseMessage.visible = true;
+					}
 				}
 				break;
 			case SPACE:
@@ -120,6 +138,8 @@
 			case PLAYING:
 				update();
 				break;
+			case OVER:
+				endGame();
 		}
 		render();
 	}
@@ -171,12 +191,29 @@
 				gameState = OVER;
 			}
 
+			//verificando colisão com nave inimiga
+			if (collide(alien, defender)) {
+				destroyAlien(alien);
+				removeObjects(defender, sprites);
+				gameState = OVER;
+			}
+
+
+
 			for (let j in missiles) {
 				let missile = missiles[j];
 				if (collide(missile, alien) && alien.state !== alien.EXPLODED) {
 					destroyAlien(alien);
 					hits++ // aumentando o valor de hits
 					updateScrote();
+					if (+hits === scoreTowin) {
+						gameState = OVER;
+						for (let k in aliens) {
+							let alienk = aliens[k];
+							destroyAlien(alienk);
+						}
+					}
+
 					removeObjects(missile, missiles);
 					removeObjects(missile, sprites);
 					j--;
@@ -189,6 +226,7 @@
 		missile.vy = -8;
 		sprites.push(missile);
 		missiles.push(missile);
+		playSound(fire);
 		shots++ // incrementando misseis
 	}
 
@@ -214,6 +252,7 @@
 	function destroyAlien(alien) {
 		alien.state = alien.EXPLODED;
 		alien.explode();
+		playSound(explosion);
 		setTimeout(function () {
 			removeObjects(alien, aliens);
 			removeObjects(alien, sprites);
@@ -251,6 +290,41 @@
 
 		scoreMessage.text = "HITS: " + hits + " - ACURACY: " + acuracy + " %";
 	}
+
+
+	function endGame() {
+		if (hits < scoreTowin) {
+			gameOverMessage.text = "EARTH DESTROYED"
+			gameOverMessage.visible = true;
+		} else {
+			youWinMessage.text = "EARTH SAVED"
+			youWinMessage.visible = true;
+		}
+		setTimeout(() => {
+			location.reload();
+		}, 5000)
+	}
+
+	function playSound(soundType){
+		let sound = document.createElement('audio');
+		if(soundType === explosion){
+			sound.src = "sound/explosion.ogg"
+		}else{
+			sound.src = "sound/fire.ogg"
+		}
+		sound.addEventListener('canplaythrough', function(e){
+			sound.play();
+		},false);
+	}
+
+	// function playRock(){
+	// 	let rock =  document.createElement('audio');
+	// 	rock.src = "sound/music.ogg"
+	// 	rock.addEventListener('canplaythrough', function(e){
+	// 		letsRock ? rock.play() :  rock.remove();
+	// 	});
+	// }
+
 
 	function render() {
 		ctx.clearRect(0, 0, cnv.width, cnv.height);
@@ -299,6 +373,35 @@
 				}
 			}
 		}
+
+		if (gameOver.length !== 0) {
+			for (let j in gameOver) {
+				let over = gameOver[j];
+				if (over.visible) {
+					ctx.font = over.font;
+					ctx.fillStyle = over.color;
+					ctx.textBaseline = over.baseline;
+					over.x = (cnv.width - 335);
+					ctx.fillText(over.text, over.x, over.y);
+				}
+			}
+		}
+
+		if (wins.length !== 0) {
+			for (let l in wins) {
+				let win = wins[l];
+				if (win.visible) {
+					ctx.font = win.font;
+					ctx.fillStyle = win.color;
+					ctx.textBaseline = win.baseline;
+					win.x = (cnv.width - 320);
+					ctx.fillText(win.text, win.x, win.y);
+				}
+			}
+		}
+
+
+
 	}
 
 	loop();
