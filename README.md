@@ -17,6 +17,5 @@ Foram realizadas melhorias no código,implementados novos elementos e ações.
 
 # Time de desenvolvimento
 
-- Eduardo Araya
-- Gustavo Ramaldes
+
 - Rhaymison Cristian
