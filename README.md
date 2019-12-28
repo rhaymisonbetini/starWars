@@ -19,3 +19,4 @@ Foram realizadas melhorias no código,implementados novos elementos e ações.
 
 
 - Rhaymison Cristian
+- Eduardo Araya
